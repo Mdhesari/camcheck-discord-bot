@@ -1,21 +1,28 @@
-package handler
+package videohandler
 
 import (
+	"context"
 	"fmt"
+	"log"
 	"time"
 
 	"github.com/bwmarrin/discordgo"
 )
 
-type Video struct{}
-
-var users []string
-
-func (v Video) CheckCameraAndDisconnect(s *discordgo.Session, e *discordgo.VoiceStateUpdate) {
+func (h Handler) CheckCameraAndDisconnect(s *discordgo.Session, e *discordgo.VoiceStateUpdate) {
 	if e.Member.User.ID == s.State.User.ID {
 
 		return
 	}
+
+	// check wether this video channel is watched
+	if !h.channelSrv.IsVideoChannel(context.Background(), e.ChannelID) {
+		log.Println("not in...", e.ChannelID)
+
+		return
+	}
+
+	log.Println("channel is in...")
 
 	if !e.SelfVideo && e.ChannelID != "" {
 		// s.GuildMemberMove(e.GuildID, e.UserID, nil)
@@ -23,7 +30,7 @@ func (v Video) CheckCameraAndDisconnect(s *discordgo.Session, e *discordgo.Voice
 		go func(uid string) {
 			time.Sleep(10 * time.Second)
 
-			// check db
+			// check cache
 
 			// check discord
 

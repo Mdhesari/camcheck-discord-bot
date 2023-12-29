@@ -1,0 +1,13 @@
+type: yml
+
+discord:
+  token: "MTE4Njc1NzM3MTU0MDgxNTk3Mw.GyvLdi.NsAJij86zEL0HAn7Zx9hzeKBxST_8B5YfwKlHQ"
+
+database:
+  mongodb:
+    port: 27017
+    host: localhost
+    db_name: db
+    username: michael
+    password: secret
+`

@@ -1,4 +1,4 @@
-package handler
+package messagehandler
 
 import (
 	"log"
@@ -6,9 +6,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-type Message struct{}
-
-func (m Message) ReplyCommands(s *discordgo.Session, msg *discordgo.MessageCreate) {
+func (h Handler) ReplyCommands(s *discordgo.Session, msg *discordgo.MessageCreate) {
 	// Ignore all messages created by the bot itself
 	// This isn't required in this specific example but it's a good practice.
 	if msg.Author.ID == s.State.User.ID {

@@ -4,19 +4,30 @@ import (
 	"flag"
 	"fmt"
 	"log"
-	"mdhesari/shawshank-discord-bot/handler"
+	"mdhesari/shawshank-discord-bot/config"
+	"mdhesari/shawshank-discord-bot/handler/interactionhandler"
+	"mdhesari/shawshank-discord-bot/handler/messagehandler"
+	"mdhesari/shawshank-discord-bot/handler/videohandler"
+	"mdhesari/shawshank-discord-bot/repository/mongorepo"
+	"mdhesari/shawshank-discord-bot/repository/mongorepo/mongochannel"
+	"mdhesari/shawshank-discord-bot/service/channelservice"
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/hellofresh/janus/pkg/plugin/basic/encrypt"
 )
 
 var (
-	token    = flag.String("token", "", "Discord token.")
+	cfg      config.Config
 	GuildID  = flag.String("guild", "", "Test guild ID. If not passed - bot registers commands globally")
-	users    []string
 	commands = []*discordgo.ApplicationCommand{
+		{
+			Name:        "list-channel",
+			Description: "Display shawshank channels list.",
+		},
 		{
 			Name:        "add-channel",
 			Description: "Adds a new channel to shawshank.",
@@ -48,66 +59,41 @@ var (
 			},
 		},
 	}
-	commandHandlers = map[string]func(s *discordgo.Session, i *discordgo.InteractionCreate){
-		"add-channel": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
-			// Access options in the order provided by the user.
-			options := i.ApplicationCommandData().Options
-
-			optionMap := make(map[string]*discordgo.ApplicationCommandInteractionDataOption, len(options))
-			for _, opt := range options {
-				optionMap[opt.Name] = opt
-			}
-
-			// format the bot's response
-			margs := make([]interface{}, 0, len(options))
-			msgformat := "You learned how to use command options! " +
-				"Take a look at the value(s) you entered:\n"
-
-			// Get the value from the option map.
-			// When the option exists, ok = true
-			if opt, ok := optionMap["channel"]; ok {
-				margs = append(margs, opt.ChannelValue(nil).ID)
-				msgformat += "> channel-option: <#%s>\n"
-			}
-
-			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
-				// Ignore type for now, they will be discussed in "responses"
-				Type: discordgo.InteractionResponseChannelMessageWithSource,
-				Data: &discordgo.InteractionResponseData{
-					Content: fmt.Sprintf(
-						msgformat,
-						margs...,
-					),
-				},
-			})
-		},
-	}
 )
 
 func init() {
+	cfg = config.Load("config.yml")
 	flag.Parse()
 }
 
 func main() {
-	session, err := discordgo.New("Bot " + *token)
+	session, err := discordgo.New("Bot " + cfg.Discord.Token)
 	if err != nil {
 		log.Fatalln("Discord session error: ", err)
 
 		return
 	}
-	defer session.Close()
-
-	registeredcmds := registerCommands(session)
-
-	registerHandlers(session)
-
-	session.Identify.Intents = discordgo.IntentsAll
 
 	err = session.Open()
 	if err != nil {
 		fmt.Println("Open connection error: ", err)
 
 		return
+	}
+	defer session.Close()
+
+	session.Identify.Intents = discordgo.IntentsAll
+
+	registerHandlers(session)
+
+	log.Println("Adding commands...")
+	registeredCommands := make([]*discordgo.ApplicationCommand, len(commands))
+	for i, v := range commands {
+		cmd, err := session.ApplicationCommandCreate(session.State.User.ID, *GuildID, v)
+		if err != nil {
+			log.Panicf("Cannot create '%v' command: %v", v.Name, err)
+		}
+		registeredCommands[i] = cmd
 	}
 
 	// Wait here until CTRL-C or other term signal is received.
@@ -116,7 +102,7 @@ func main() {
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
 	<-sc
 
-	removeCommands(session, registeredcmds)
+	removeCommands(session, registeredCommands)
 }
 
 func removeCommands(s *discordgo.Session, registercmds []*discordgo.ApplicationCommand) {
@@ -138,32 +124,23 @@ func removeCommands(s *discordgo.Session, registercmds []*discordgo.ApplicationC
 	}
 }
 
-func registerCommands(s *discordgo.Session) []*discordgo.ApplicationCommand {
-	log.Println("Adding commands...")
-	registeredCommands := make([]*discordgo.ApplicationCommand, len(commands))
-	for i, v := range commands {
-		cmd, err := s.ApplicationCommandCreate(s.State.User.ID, *GuildID, v)
-		if err != nil {
-			log.Panicf("Cannot create '%v' command: %v", v.Name, err)
-		}
-		registeredCommands[i] = cmd
-	}
-
-	return registeredCommands
-}
-
 func registerHandlers(s *discordgo.Session) {
-	video := handler.Video{}
+	cli, err := mongorepo.New(cfg.Database.MongoDB, 30*time.Second, encrypt.Hash{})
+	if err != nil {
+		log.Fatalf("mongo connect error %s", err)
+	}
+	repo := mongochannel.New(cli)
+	channelSrv := channelservice.New(repo)
 
-	s.AddHandler(video.CheckCameraAndDisconnect)
+	video := videohandler.New(s, channelSrv)
 
-	message := handler.Message{}
+	video.SetHandlers()
 
-	s.AddHandler(message.ReplyCommands)
+	message := messagehandler.New(s)
 
-	s.AddHandler(func(s *discordgo.Session, i *discordgo.InteractionCreate) {
-		if h, ok := commandHandlers[i.ApplicationCommandData().Name]; ok {
-			h(s, i)
-		}
-	})
+	message.SetHanlders()
+
+	interaction := interactionhandler.New(s, channelSrv)
+
+	interaction.SetHandlers()
 }
