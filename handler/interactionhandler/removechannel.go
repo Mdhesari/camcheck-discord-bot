@@ -27,7 +27,7 @@ func (h Handler) RemoveChannel(s *discordgo.Session, i *discordgo.InteractionCre
 
 	if !ok {
 		content = "Channel is invalid!"
-		sendInteractionRespond(content, s, i)
+		SendInteractionRespond(content, s, i)
 
 		return
 	}
