@@ -1,8 +1,11 @@
-module mdhesari/shawshank-discord-bot
+module mdhesari/camcheck-discord-bot
 
 go 1.21.1
 
-require github.com/bwmarrin/discordgo v0.27.1
+require (
+	github.com/bwmarrin/discordgo v0.27.1
+	github.com/redis/go-redis/v9 v9.3.1
+)
 
 require (
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
@@ -15,7 +18,6 @@ require (
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/mitchellh/reflectwalk v1.0.2 // indirect
 	github.com/montanaflynn/stats v0.0.0-20171201202039-1bf9dbcd8cbe // indirect
-	github.com/redis/go-redis/v9 v9.3.1 // indirect
 	github.com/xdg-go/pbkdf2 v1.0.0 // indirect
 	github.com/xdg-go/scram v1.1.2 // indirect
 	github.com/xdg-go/stringprep v1.0.4 // indirect
@@ -26,7 +28,6 @@ require (
 )
 
 require (
-	github.com/google/uuid v1.5.0
 	github.com/gorilla/websocket v1.4.2 // indirect
 	github.com/hellofresh/janus v0.0.0-20230925145208-ce8de8183c67
 	github.com/knadh/koanf/parsers/yaml v0.1.0

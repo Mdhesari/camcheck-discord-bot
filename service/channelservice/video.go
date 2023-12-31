@@ -3,7 +3,7 @@ package channelservice
 import (
 	"context"
 	"log"
-	"mdhesari/shawshank-discord-bot/entity"
+	"mdhesari/camcheck-discord-bot/entity"
 
 	"go.mongodb.org/mongo-driver/mongo"
 )

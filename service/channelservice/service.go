@@ -2,7 +2,7 @@ package channelservice
 
 import (
 	"context"
-	"mdhesari/shawshank-discord-bot/entity"
+	"mdhesari/camcheck-discord-bot/entity"
 )
 
 type CacheRepository interface {
@@ -16,7 +16,7 @@ type CacheRepository interface {
 
 type Repository interface {
 	Create(c context.Context, ch *entity.Channel) error
-	GetAll(ctx context.Context) ([]entity.Channel, error)
+	GetAll(ctx context.Context, discordGID string) ([]entity.Channel, error)
 	FindByDiscordID(ctx context.Context, id string) (*entity.Channel, error)
 	RemoveChannelByDiscordID(ctx context.Context, id string) (bool, error)
 }
@@ -33,8 +33,8 @@ func New(repo Repository, cacheRepo CacheRepository) Service {
 	}
 }
 
-func (s Service) Get(ctx context.Context) ([]entity.Channel, error) {
-	channels, err := s.repo.GetAll(ctx)
+func (s Service) Get(ctx context.Context,discordGID string) ([]entity.Channel, error) {
+	channels, err := s.repo.GetAll(ctx, discordGID)
 	if err != nil {
 		return nil, err
 	}

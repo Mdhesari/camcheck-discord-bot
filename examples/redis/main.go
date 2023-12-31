@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	"mdhesari/shawshank-discord-bot/config"
-	"mdhesari/shawshank-discord-bot/repository/redisrepo"
-	"mdhesari/shawshank-discord-bot/repository/redisrepo/redischannel"
+	"mdhesari/camcheck-discord-bot/config"
+	"mdhesari/camcheck-discord-bot/repository/redisrepo"
+	"mdhesari/camcheck-discord-bot/repository/redisrepo/redischannel"
 )
 
 func main() {

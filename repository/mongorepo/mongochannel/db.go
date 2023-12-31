@@ -1,6 +1,6 @@
 package mongochannel
 
-import "mdhesari/shawshank-discord-bot/repository/mongorepo"
+import "mdhesari/camcheck-discord-bot/repository/mongorepo"
 
 type DB struct {
 	cli *mongorepo.MongoDB

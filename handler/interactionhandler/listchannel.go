@@ -14,14 +14,14 @@ func (h Handler) ListChannel(s *discordgo.Session, i *discordgo.InteractionCreat
 		return
 	}
 
-	channels, err := h.channelSrv.Get(context.Background())
+	channels, err := h.channelSrv.Get(context.Background(), i.GuildID)
 	if err != nil {
 		log.Fatalf("Getting channels error: %s", err)
 
 		return
 	}
 
-	content := "Here's Shawshank channels list :" + "\n"
+	content := fmt.Sprintf("Here's %s channels list :\n", h.config.Name)
 
 	for _, ch := range channels {
 		content += fmt.Sprintf("> channel : <#%s>\n", ch.DiscordID)

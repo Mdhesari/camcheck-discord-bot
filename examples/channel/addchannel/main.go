@@ -5,13 +5,13 @@ import (
 	"fmt"
 
 	"log"
-	"mdhesari/shawshank-discord-bot/config"
-	"mdhesari/shawshank-discord-bot/entity"
-	"mdhesari/shawshank-discord-bot/repository/mongorepo"
-	"mdhesari/shawshank-discord-bot/repository/mongorepo/mongochannel"
-	"mdhesari/shawshank-discord-bot/repository/redisrepo"
-	"mdhesari/shawshank-discord-bot/repository/redisrepo/redischannel"
-	"mdhesari/shawshank-discord-bot/service/channelservice"
+	"mdhesari/camcheck-discord-bot/config"
+	"mdhesari/camcheck-discord-bot/entity"
+	"mdhesari/camcheck-discord-bot/repository/mongorepo"
+	"mdhesari/camcheck-discord-bot/repository/mongorepo/mongochannel"
+	"mdhesari/camcheck-discord-bot/repository/redisrepo"
+	"mdhesari/camcheck-discord-bot/repository/redisrepo/redischannel"
+	"mdhesari/camcheck-discord-bot/service/channelservice"
 	"time"
 
 	"github.com/hellofresh/janus/pkg/plugin/basic/encrypt"
@@ -47,5 +47,5 @@ func main() {
 
 	fmt.Println(channelSrv.IsVideoChannel(context.TODO(), ch.DiscordID))
 
-	fmt.Println(repo.GetAll(context.Background()))
+	fmt.Println(repo.GetAll(context.Background(), "sdfdfdsd"))
 }

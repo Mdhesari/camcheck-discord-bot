@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"mdhesari/shawshank-discord-bot/entity"
+	"mdhesari/camcheck-discord-bot/entity"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -26,27 +26,23 @@ func (h Handler) AddChannel(s *discordgo.Session, i *discordgo.InteractionCreate
 	// format the bot's response
 	margs := make([]interface{}, 0, len(options))
 	msgformat := ""
-	// msgformat := "You learned how to use command options! " +
-	// 	"Take a look at the value(s) you entered:\n"
 
-	// Get the value from the option map.
-	// When the option exists, ok = true
 	if opt, ok := optionMap["channel"]; ok {
 		c := opt.ChannelValue(nil)
 
 		margs = append(margs, opt.ChannelValue(nil).ID)
 
-		shawshankch := entity.Channel{
+		camcheckCh := entity.Channel{
 			DiscordID: c.ID,
 			GuildID:   c.GuildID,
 			Name:      c.Name,
 			IsVideo:   true,
 		}
-		err := h.channelSrv.AddChannel(context.Background(), &shawshankch)
+		err := h.channelSrv.AddChannel(context.Background(), &camcheckCh)
 		if err != nil {
-			log.Println(err)
+			log.Println("Channel service add error: ", err)
 
-			msgformat = "Something went wrong!"
+			msgformat = "> Something went wrong!"
 		} else {
 			msgformat += "> channel added successfully: <#%s>\n"
 		}

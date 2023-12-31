@@ -2,7 +2,6 @@ package interactionhandler
 
 import (
 	"context"
-	"fmt"
 	"log"
 
 	"github.com/bwmarrin/discordgo"
@@ -22,40 +21,43 @@ func (h Handler) RemoveChannel(s *discordgo.Session, i *discordgo.InteractionCre
 		optionMap[opt.Name] = opt
 	}
 
-	// format the bot's response
-	margs := make([]interface{}, 0, len(options))
-	msgformat := ""
+	content := ""
 
-	if opt, ok := optionMap["channel"]; ok {
-		c := opt.ChannelValue(nil)
+	opt, ok := optionMap["channel"]
 
-		margs = append(margs, opt.ChannelValue(nil).ID)
+	if !ok {
+		content = "Channel is invalid!"
+		sendInteractionRespond(content, s, i)
 
-		isVideoChannel := h.channelSrv.IsVideoChannel(context.Background(), c.ID)
-
-		if isVideoChannel {
-			res, err := h.channelSrv.RemoveChannel(context.Background(), c.ID)
-			if err != nil || !res {
-				log.Println(err)
-
-				msgformat = "Something went wrong!"
-			} else {
-
-				msgformat += "> channel deleted successfully from shawshank: <#%s>\n"
-			}
-		} else {
-			msgformat = "> channel is not in shawshank's list: <#%s>\n"
-		}
+		return
 	}
 
+	c := opt.ChannelValue(nil)
+
+	isVideoChannel := h.channelSrv.IsVideoChannel(context.Background(), c.ID)
+
+	if isVideoChannel {
+		res, err := h.channelSrv.RemoveChannel(context.Background(), c.ID)
+		if err != nil || !res {
+			log.Println(err)
+
+			content = "Something went wrong!"
+		} else {
+
+			content += "> channel deleted successfully: <#%s>\n"
+		}
+	} else {
+		content = "> channel is not in camcheck's list: <#%s>\n"
+	}
+
+	sendInteractionRespond(content, s, i)
+}
+
+func sendInteractionRespond(content string, s *discordgo.Session, i *discordgo.InteractionCreate) {
 	s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
-		// Ignore type for now, they will be discussed in "responses"
 		Type: discordgo.InteractionResponseChannelMessageWithSource,
 		Data: &discordgo.InteractionResponseData{
-			Content: fmt.Sprintf(
-				msgformat,
-				margs...,
-			),
+			Content: content,
 		},
 	})
 }

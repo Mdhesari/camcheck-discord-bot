@@ -2,17 +2,16 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"log"
-	"mdhesari/shawshank-discord-bot/config"
-	"mdhesari/shawshank-discord-bot/handler/interactionhandler"
-	"mdhesari/shawshank-discord-bot/handler/messagehandler"
-	"mdhesari/shawshank-discord-bot/handler/videohandler"
-	"mdhesari/shawshank-discord-bot/repository/mongorepo"
-	"mdhesari/shawshank-discord-bot/repository/mongorepo/mongochannel"
-	"mdhesari/shawshank-discord-bot/repository/redisrepo"
-	"mdhesari/shawshank-discord-bot/repository/redisrepo/redischannel"
-	"mdhesari/shawshank-discord-bot/service/channelservice"
+	"mdhesari/camcheck-discord-bot/config"
+	"mdhesari/camcheck-discord-bot/handler/interactionhandler"
+	"mdhesari/camcheck-discord-bot/handler/messagehandler"
+	"mdhesari/camcheck-discord-bot/handler/videohandler"
+	"mdhesari/camcheck-discord-bot/repository/mongorepo"
+	"mdhesari/camcheck-discord-bot/repository/mongorepo/mongochannel"
+	"mdhesari/camcheck-discord-bot/repository/redisrepo"
+	"mdhesari/camcheck-discord-bot/repository/redisrepo/redischannel"
+	"mdhesari/camcheck-discord-bot/service/channelservice"
 	"os"
 	"os/signal"
 	"syscall"
@@ -28,11 +27,11 @@ var (
 	commands = []*discordgo.ApplicationCommand{
 		{
 			Name:        "list-channel",
-			Description: "Display shawshank channels list.",
+			Description: "Display bot channels list.",
 		},
 		{
 			Name:        "add-channel",
-			Description: "Adds a new channel to shawshank.",
+			Description: "Adds a new channel to bot.",
 			Options: []*discordgo.ApplicationCommandOption{
 				{
 					Type: discordgo.ApplicationCommandOptionChannel,
@@ -47,7 +46,7 @@ var (
 		},
 		{
 			Name:        "remove-channel",
-			Description: "Removes a channel from shawshank.",
+			Description: "Removes a channel from bot.",
 			Options: []*discordgo.ApplicationCommandOption{
 				{
 					Type: discordgo.ApplicationCommandOptionChannel,
@@ -78,7 +77,7 @@ func main() {
 
 	err = session.Open()
 	if err != nil {
-		fmt.Println("Open connection error: ", err)
+		log.Println("Open connection error: ", err)
 
 		return
 	}
@@ -99,7 +98,7 @@ func main() {
 	}
 
 	// Wait here until CTRL-C or other term signal is received.
-	fmt.Println("Bot is now running.  Press CTRL-C to exit.")
+	log.Println("Bot is now running.  Press CTRL-C to exit.")
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
 	<-sc
@@ -149,7 +148,7 @@ func registerHandlers(s *discordgo.Session) {
 
 	message.SetHanlders()
 
-	interaction := interactionhandler.New(s, channelSrv)
+	interaction := interactionhandler.New(&cfg.Discord, s, channelSrv)
 
 	interaction.SetHandlers()
 }

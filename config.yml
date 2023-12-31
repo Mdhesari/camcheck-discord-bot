@@ -1,7 +1,9 @@
 type: yml
 
 discord:
-  token: "MTE4Njc1NzM3MTU0MDgxNTk3Mw.GyvLdi.NsAJij86zEL0HAn7Zx9hzeKBxST_8B5YfwKlHQ"
+  name: "CamCheckBot"
+  max_wait_seconds: 30
+  token: "MTE5MTAzMDQ1NDY3ODIxMjcyOA.GYJG8Y.bRC6e5euR1aZ1nk8gKDsJg-eT-5d_451Qa2k8w"
 
 database:
   redis:

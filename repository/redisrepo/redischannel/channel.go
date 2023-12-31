@@ -2,7 +2,7 @@ package redischannel
 
 import (
 	"context"
-	"mdhesari/shawshank-discord-bot/repository/redisrepo"
+	"mdhesari/camcheck-discord-bot/repository/redisrepo"
 	"time"
 
 	"github.com/redis/go-redis/v9"

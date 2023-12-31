@@ -3,18 +3,18 @@ package mongochannel
 import (
 	"context"
 	"errors"
-	"mdhesari/shawshank-discord-bot/entity"
+	"mdhesari/camcheck-discord-bot/entity"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func (d *DB) GetAll(ctx context.Context) ([]entity.Channel, error) {
+func (d *DB) GetAll(ctx context.Context, discordGID string) ([]entity.Channel, error) {
 	ctx, cancel := context.WithTimeout(ctx, d.cli.QueryTimeout)
 	defer cancel()
 
 	var channels []entity.Channel
-	cur, err := d.cli.Conn().Collection("channels").Find(ctx, bson.D{}, options.Find())
+	cur, err := d.cli.Conn().Collection("channels").Find(ctx, bson.D{{"discord_id", discordGID}}, options.Find())
 	if err != nil {
 		return nil, err
 	}

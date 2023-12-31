@@ -1,18 +1,21 @@
 package interactionhandler
 
 import (
-	"mdhesari/shawshank-discord-bot/service/channelservice"
+	"mdhesari/camcheck-discord-bot/config"
+	"mdhesari/camcheck-discord-bot/service/channelservice"
 
 	"github.com/bwmarrin/discordgo"
 )
 
 type Handler struct {
+	config     *config.Discord
 	session    *discordgo.Session
 	channelSrv *channelservice.Service
 }
 
-func New(s *discordgo.Session, channelSrv channelservice.Service) *Handler {
+func New(cfg *config.Discord, s *discordgo.Session, channelSrv channelservice.Service) *Handler {
 	return &Handler{
+		config:     cfg,
 		session:    s,
 		channelSrv: &channelSrv,
 	}

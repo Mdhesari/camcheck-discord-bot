@@ -1,8 +1,8 @@
 package config
 
 import (
-	"mdhesari/shawshank-discord-bot/repository/mongorepo"
-	"mdhesari/shawshank-discord-bot/repository/redisrepo"
+	"mdhesari/camcheck-discord-bot/repository/mongorepo"
+	"mdhesari/camcheck-discord-bot/repository/redisrepo"
 )
 
 type Database struct {
@@ -11,7 +11,9 @@ type Database struct {
 }
 
 type Discord struct {
-	Token string `koanf:"token"`
+	Name           string `koanf:"name"`
+	MaxWaitSeconds int    `koanf:"max_wait_seconds"`
+	Token          string `koanf:"token"`
 }
 
 type Config struct {

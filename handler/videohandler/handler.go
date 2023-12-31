@@ -1,12 +1,13 @@
 package videohandler
 
 import (
-	"mdhesari/shawshank-discord-bot/service/channelservice"
+	"mdhesari/camcheck-discord-bot/service/channelservice"
 
 	"github.com/bwmarrin/discordgo"
 )
 
-var users []string
+type Config struct {
+}
 
 type Handler struct {
 	session    *discordgo.Session
