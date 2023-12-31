@@ -53,7 +53,7 @@ var (
 					ChannelTypes: []discordgo.ChannelType{
 						discordgo.ChannelTypeGuildVoice,
 					},
-					Description: "which channel to add.",
+					Description: "which channel to remove.",
 					Required:    true,
 				},
 			},

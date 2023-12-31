@@ -22,6 +22,10 @@ func (s Service) IsVideoChannel(ctx context.Context, id string) bool {
 	return true
 }
 
+func (s Service) RemoveChannel(ctx context.Context, id string) (bool, error) {
+	return s.repo.RemoveChannelByDiscordID(ctx, id)
+}
+
 func (s Service) AddChannel(ctx context.Context, ch *entity.Channel) error {
 	err := s.repo.Create(ctx, ch)
 	if err != nil {

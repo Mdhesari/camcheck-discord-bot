@@ -20,5 +20,6 @@ func New(s *discordgo.Session, channelSrv channelservice.Service) *Handler {
 
 func (h Handler) SetHandlers() {
 	h.session.AddHandler(h.AddChannel)
+	h.session.AddHandler(h.RemoveChannel)
 	h.session.AddHandler(h.ListChannel)
 }

@@ -79,3 +79,22 @@ func (d *DB) FindByDiscordID(ctx context.Context, id string) (*entity.Channel, e
 
 	return &ch, nil
 }
+
+func (d *DB) RemoveChannelByDiscordID(ctx context.Context, id string) (bool, error) {
+	ctx, cancel := context.WithTimeout(ctx, d.cli.QueryTimeout)
+	defer cancel()
+
+	filter := bson.M{"discord_id": id}
+	res, err := d.cli.Conn().Collection("channels").DeleteOne(ctx, filter)
+	if err != nil {
+
+		return false, err
+	}
+
+	if res.DeletedCount > 0 {
+
+		return true, nil
+	}
+
+	return false, nil
+}
