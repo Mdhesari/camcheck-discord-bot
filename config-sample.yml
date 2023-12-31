@@ -7,13 +7,13 @@ discord:
 
 database:
   redis:
-    port: "6379"
-    host: "localhost"
+    port: 6379
+    host: redis
     password: "eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81"
     db: 0
   mongodb:
     port: 27017
-    host: localhost
+    host: mongo
     db_name: db
     username: michael
     password: secret

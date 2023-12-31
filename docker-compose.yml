@@ -1,22 +1,41 @@
 version: '3.9'
 services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./config.yml:/app/config.yml
+      - ./cmd:/app/cmd
+    ports:
+      - "2001:2001"
+    restart: unless-stopped
+    depends_on:
+      - redis
+      - mongo
+    networks:
+      - backend
   redis:
     image: redis:alpine
     restart: always
     ports:
       - '6379:6379'
     command: redis-server --save 20 1 --loglevel warning --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
-    volumes: 
+    volumes:
       - redis:/data
+    networks:
+      - backend
   mongo:
     image: mongo
-    container_name: test-mongo
+    container_name: mongo
     restart: always
     ports:
       - 27017:27017
     environment:
       - MONGO_INITDB_ROOT_USERNAME=michael
       - MONGO_INITDB_ROOT_PASSWORD=secret
+    networks:
+      - backend
   mongo-client:
     image: mongo-express
     restart: always
@@ -28,6 +47,12 @@ services:
       - ME_CONFIG_MONGODB_URL=mongodb://michael:secret@db:27017/
     depends_on:
       - mongo
+    networks:
+      - backend
+
 volumes:
   redis:
     driver: local
+
+networks:
+  backend:

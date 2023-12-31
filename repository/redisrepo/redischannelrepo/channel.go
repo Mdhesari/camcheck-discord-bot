@@ -1,4 +1,4 @@
-package redischannel
+package redischannelrepo
 
 import (
 	"context"

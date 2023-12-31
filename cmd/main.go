@@ -10,7 +10,7 @@ import (
 	"mdhesari/camcheck-discord-bot/repository/mongorepo"
 	"mdhesari/camcheck-discord-bot/repository/mongorepo/mongochannel"
 	"mdhesari/camcheck-discord-bot/repository/redisrepo"
-	"mdhesari/camcheck-discord-bot/repository/redisrepo/redischannel"
+	"mdhesari/camcheck-discord-bot/repository/redisrepo/redischannelrepo"
 	"mdhesari/camcheck-discord-bot/service/channelservice"
 	"os"
 	"os/signal"
@@ -128,7 +128,7 @@ func removeCommands(s *discordgo.Session, registercmds []*discordgo.ApplicationC
 func registerHandlers(s *discordgo.Session) {
 	cli, err := mongorepo.New(cfg.Database.MongoDB, 30*time.Second, encrypt.Hash{})
 	if err != nil {
-		log.Fatalf("mongo connect error %s", err)
+		panic(err)
 	}
 	repo := mongochannel.New(cli)
 
@@ -136,7 +136,7 @@ func registerHandlers(s *discordgo.Session) {
 	if err != nil {
 		panic(err)
 	}
-	CacheRepo := redischannel.New(redisCli)
+	CacheRepo := redischannelrepo.New(redisCli)
 
 	channelSrv := channelservice.New(repo, CacheRepo)
 
