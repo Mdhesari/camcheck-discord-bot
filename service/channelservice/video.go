@@ -23,8 +23,15 @@ func (s Service) IsVideoChannel(ctx context.Context, id string) bool {
 	return true
 }
 
-func (s Service) RemoveChannel(ctx context.Context, id string) (bool, error) {
-	return s.repo.RemoveChannelByDiscordID(ctx, id)
+func (s Service) RemoveChannelByDiscordID(ctx context.Context, id string) bool {
+	res, err := s.repo.RemoveChannelByDiscordID(ctx, id)
+	if err != nil {
+		log.Println(err)
+
+		return false
+	}
+
+	return res
 }
 
 func (s Service) AddChannel(ctx context.Context, ch *entity.Channel) error {
@@ -39,7 +46,7 @@ func (s Service) AddChannel(ctx context.Context, ch *entity.Channel) error {
 func (s Service) AddUserCameraOff(channelID string, userID string) bool {
 	err := s.cacheRepo.AddUserCameraOff(channelID, userID)
 	if err != nil {
-		log.Println(err)
+		log.Println("Add user camera off error: ", err)
 
 		return false
 	}
@@ -50,7 +57,7 @@ func (s Service) AddUserCameraOff(channelID string, userID string) bool {
 func (s Service) RemoveUserCameraOff(channelID string, userID string) bool {
 	err := s.cacheRepo.RemoveUserCameraOff(channelID, userID)
 	if err != nil {
-		log.Println(err)
+		log.Println("Remove user camera off error: ", err)
 
 		return false
 	}
@@ -61,7 +68,7 @@ func (s Service) RemoveUserCameraOff(channelID string, userID string) bool {
 func (s Service) IsUserCameraOn(channelID string, userID string) bool {
 	res, err := s.cacheRepo.IsUserCameraOn(channelID, userID)
 	if err != nil {
-		log.Println("Reids repo error: ", err)
+		log.Println("Redis repo error: ", err)
 
 		return false
 	}

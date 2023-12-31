@@ -2,7 +2,7 @@ package interactionhandler
 
 import (
 	"context"
-	"log"
+	"fmt"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -37,18 +37,16 @@ func (h Handler) RemoveChannel(s *discordgo.Session, i *discordgo.InteractionCre
 	isVideoChannel := h.channelSrv.IsVideoChannel(context.Background(), c.ID)
 
 	if isVideoChannel {
-		res, err := h.channelSrv.RemoveChannel(context.Background(), c.ID)
-		if err != nil || !res {
-			log.Println(err)
-
-			content = "Something went wrong!"
+		if res := h.channelSrv.RemoveChannelByDiscordID(context.Background(), c.ID); !res {
+			content = "Something went wrong! <#%s>\n"
 		} else {
-
-			content += "> channel deleted successfully: <#%s>\n"
+			content = "> channel deleted successfully: <#%s>\n"
 		}
 	} else {
 		content = "> channel is not in camcheck's list: <#%s>\n"
 	}
+
+	fmt.Sprintf(content, c.ID)
 
 	sendInteractionRespond(content, s, i)
 }
