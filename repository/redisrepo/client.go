@@ -10,7 +10,7 @@ import (
 type Config struct {
 	Host     string `koanf:"host"`
 	Port     int    `koanf:"port"`
-	DB       int    `koanf:"db"`
+	DBName   int    `koanf:"db_name"`
 	Password string `koanf:"password"`
 }
 
@@ -25,7 +25,7 @@ func New(cfg Config) (*Client, error) {
 	cli := redis.NewClient(&redis.Options{
 		Addr:     addr,
 		Password: cfg.Password, // no password set
-		DB:       cfg.DB,       // use default DB
+		DB:       cfg.DBName,   // use default DB
 	})
 
 	status := cli.Ping(context.Background())
