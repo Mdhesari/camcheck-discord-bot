@@ -9,7 +9,7 @@ database:
   redis:
     port: 6379
     host: redis
-    password: ""
+    password: "eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81"
     db_name: 0
   mongodb:
     port: 27017

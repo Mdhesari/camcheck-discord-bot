@@ -8,11 +8,9 @@ CamCheckBot is a Discord bot designed to check if everyone in a voice channel ha
 - [Prerequisites](#prerequisites)
 - [Setup](#setup)
   - [Configuration](#configuration)
-  - [Running Locally](#running-locally)
   - [Docker Compose](#docker-compose)
 - [Usage](#usage)
 - [Contributing](#contributing)
-- [License](#license)
 
 ## Features
 
@@ -32,27 +30,32 @@ Before you begin, ensure you have the following installed on your system:
 
 1. **Clone this repository:**
 
+   ```bash
+   git clone https://github.com/your-username/CamCheckBot.git
+   cd CamCheckBot
+   ```
+
+2. **Create a `config.yml` file in the root directory from config-sample.yml:**
+
+   ```bash
+   cp config-sample.yml config.yml
+   ```
+
+### Docker Compose
+
+**Build and run docker compose**
+
     ```bash
-    git clone https://github.com/your-username/CamCheckBot.git
-    cd CamCheckBot
+    docker compose up -d
     ```
 
-2. **Create a `.env` file in the root directory with the following content:**
+This will start CamCheckBot with Redis and MongoDB containers.
 
-    ```env
-    # Discord Bot Token
-    DISCORD_TOKEN=your_discord_bot_token
+### Usage
 
-    # Redis Configuration
-    REDIS_ADDR=localhost:6379
-    REDIS_PASSWORD=
+1. Invite the bot to your Discord server.
+2. Use the /ping command to verify bot loading.
 
-    # MongoDB Configuration
-    MONGO_URI=mongodb://localhost:27017
-    MONGO_DB=camcheckbot
-    ```
+### Contributing
 
-### Running Locally
-
-```bash
-go run main.go
+Contributions are welcome! If you have any ideas, suggestions, or bug reports, please open an issue or submit a pull request.

@@ -27,13 +27,13 @@ func (h Handler) CheckCameraAndDisconnect(s *discordgo.Session, e *discordgo.Voi
 		h.channelSrv.AddUserCameraOff(e.ChannelID, e.UserID)
 
 		go func(channelID string, userID string) {
-			time.Sleep(30 * time.Second)
+			time.Sleep(10 * time.Second)
 
 			if !h.channelSrv.IsUserCameraOn(channelID, userID) {
 				s.ChannelMessageSend(e.ChannelID, e.Member.User.Mention()+" Your camera is off! You will be disconnected very soon! that's all I know...")
 			}
 
-			time.Sleep(10 * time.Second)
+			time.Sleep(time.Duration(h.config.MaxWaitSeconds) * time.Second)
 
 			if !h.channelSrv.IsUserCameraOn(channelID, userID) {
 				if err := s.GuildMemberMove(e.GuildID, userID, nil); err != nil {

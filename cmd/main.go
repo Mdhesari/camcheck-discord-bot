@@ -140,7 +140,7 @@ func registerHandlers(s *discordgo.Session) {
 
 	channelSrv := channelservice.New(repo, CacheRepo)
 
-	video := videohandler.New(s, channelSrv)
+	video := videohandler.New(&cfg.Discord, s, channelSrv)
 
 	video.SetHandlers()
 
