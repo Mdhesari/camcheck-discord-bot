@@ -34,8 +34,7 @@ func (h Handler) AddChannel(s *discordgo.Session, i *discordgo.InteractionCreate
 
 		camcheckCh := entity.Channel{
 			DiscordID: c.ID,
-			GuildID:   c.GuildID,
-			Name:      c.Name,
+			GuildID:   i.GuildID,
 			IsVideo:   true,
 		}
 		err := h.channelSrv.AddChannel(context.Background(), &camcheckCh)
