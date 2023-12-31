@@ -1,13 +1,17 @@
 package config
 
-import "mdhesari/shawshank-discord-bot/repository/mongorepo"
+import (
+	"mdhesari/shawshank-discord-bot/repository/mongorepo"
+	"mdhesari/shawshank-discord-bot/repository/redisrepo"
+)
 
 type Database struct {
 	MongoDB mongorepo.Config `koanf:"mongodb"`
+	Redis   redisrepo.Config `koanf:"redis"`
 }
 
 type Discord struct {
-	Token string
+	Token string `koanf:"token"`
 }
 
 type Config struct {

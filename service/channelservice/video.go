@@ -2,6 +2,7 @@ package channelservice
 
 import (
 	"context"
+	"log"
 	"mdhesari/shawshank-discord-bot/entity"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -33,4 +34,37 @@ func (s Service) AddChannel(ctx context.Context, ch *entity.Channel) error {
 	}
 
 	return nil
+}
+
+func (s Service) AddUserCameraOff(channelID string, userID string) bool {
+	err := s.cacheRepo.AddUserCameraOff(channelID, userID)
+	if err != nil {
+		log.Println(err)
+
+		return false
+	}
+
+	return true
+}
+
+func (s Service) RemoveUserCameraOff(channelID string, userID string) bool {
+	err := s.cacheRepo.RemoveUserCameraOff(channelID, userID)
+	if err != nil {
+		log.Println(err)
+
+		return false
+	}
+
+	return true
+}
+
+func (s Service) IsUserCameraOn(channelID string, userID string) bool {
+	res, err := s.cacheRepo.IsUserCameraOn(channelID, userID)
+	if err != nil {
+		log.Println("Reids repo error: ", err)
+
+		return false
+	}
+
+	return res
 }

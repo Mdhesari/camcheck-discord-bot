@@ -5,6 +5,15 @@ import (
 	"mdhesari/shawshank-discord-bot/entity"
 )
 
+type CacheRepository interface {
+	Create(id string) (bool, error)
+	Get(id string) (string, error)
+	Delete(id string) (bool, error)
+	IsUserCameraOn(channelID string, userID string) (bool, error)
+	AddUserCameraOff(channelID string, userID string) error
+	RemoveUserCameraOff(channelID string, userID string) error
+}
+
 type Repository interface {
 	Create(c context.Context, ch *entity.Channel) error
 	GetAll(ctx context.Context) ([]entity.Channel, error)
@@ -13,12 +22,14 @@ type Repository interface {
 }
 
 type Service struct {
-	repo Repository
+	repo      Repository
+	cacheRepo CacheRepository
 }
 
-func New(repo Repository) Service {
+func New(repo Repository, cacheRepo CacheRepository) Service {
 	return Service{
-		repo: repo,
+		repo:      repo,
+		cacheRepo: cacheRepo,
 	}
 }
 

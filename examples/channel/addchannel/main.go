@@ -9,6 +9,8 @@ import (
 	"mdhesari/shawshank-discord-bot/entity"
 	"mdhesari/shawshank-discord-bot/repository/mongorepo"
 	"mdhesari/shawshank-discord-bot/repository/mongorepo/mongochannel"
+	"mdhesari/shawshank-discord-bot/repository/redisrepo"
+	"mdhesari/shawshank-discord-bot/repository/redisrepo/redischannel"
 	"mdhesari/shawshank-discord-bot/service/channelservice"
 	"time"
 
@@ -23,7 +25,14 @@ func main() {
 		log.Fatalf("mongo connect error %s", err)
 	}
 	repo := mongochannel.New(cli)
-	channelSrv := channelservice.New(repo)
+
+	redisCli, err := redisrepo.New(cfg.Database.Redis)
+	if err != nil {
+		panic(err)
+	}
+	CacheRepo := redischannel.New(redisCli)
+
+	channelSrv := channelservice.New(repo, CacheRepo)
 
 	ch := entity.Channel{
 		DiscordID: "sdfddfsdf",
