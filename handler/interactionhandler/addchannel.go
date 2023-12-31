@@ -2,6 +2,7 @@ package interactionhandler
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"mdhesari/camcheck-discord-bot/entity"
 
@@ -53,6 +54,8 @@ func (h Handler) AddChannel(s *discordgo.Session, i *discordgo.InteractionCreate
 		} else {
 			content = "> channel added successfully: <#%s>\n"
 		}
+
+		content = fmt.Sprintf(content, c.ID)
 
 	}
 
