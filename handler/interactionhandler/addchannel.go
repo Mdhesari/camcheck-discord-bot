@@ -2,7 +2,6 @@ package interactionhandler
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"mdhesari/camcheck-discord-bot/entity"
 
@@ -24,37 +23,38 @@ func (h Handler) AddChannel(s *discordgo.Session, i *discordgo.InteractionCreate
 	}
 
 	// format the bot's response
-	margs := make([]interface{}, 0, len(options))
-	msgformat := ""
+	content := ""
 
-	if opt, ok := optionMap["channel"]; ok {
-		c := opt.ChannelValue(nil)
+	opt, ok := optionMap["channel"]
+	if !ok {
+		content = "Channel is invalid!"
+		SendInteractionRespond(content, s, i)
 
-		margs = append(margs, opt.ChannelValue(nil).ID)
+		return
+	}
 
+	c := opt.ChannelValue(nil)
+
+	if h.channelSrv.IsVideoChannel(context.Background(), c.ID) {
+		content = "Channel already exists."
+
+	} else {
 		camcheckCh := entity.Channel{
 			DiscordID: c.ID,
 			GuildID:   i.GuildID,
 			IsVideo:   true,
 		}
+
 		err := h.channelSrv.AddChannel(context.Background(), &camcheckCh)
 		if err != nil {
 			log.Println("Channel service add error: ", err)
 
-			msgformat = "> Something went wrong!"
+			content = "> Something went wrong!"
 		} else {
-			msgformat += "> channel added successfully: <#%s>\n"
+			content = "> channel added successfully: <#%s>\n"
 		}
+
 	}
 
-	s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
-		// Ignore type for now, they will be discussed in "responses"
-		Type: discordgo.InteractionResponseChannelMessageWithSource,
-		Data: &discordgo.InteractionResponseData{
-			Content: fmt.Sprintf(
-				msgformat,
-				margs...,
-			),
-		},
-	})
+	SendInteractionRespond(content, s, i)
 }

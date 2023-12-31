@@ -48,14 +48,5 @@ func (h Handler) RemoveChannel(s *discordgo.Session, i *discordgo.InteractionCre
 
 	content = fmt.Sprintf(content, c.ID)
 
-	sendInteractionRespond(content, s, i)
-}
-
-func sendInteractionRespond(content string, s *discordgo.Session, i *discordgo.InteractionCreate) {
-	s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
-		Type: discordgo.InteractionResponseChannelMessageWithSource,
-		Data: &discordgo.InteractionResponseData{
-			Content: content,
-		},
-	})
+	SendInteractionRespond(content, s, i)
 }

@@ -26,3 +26,12 @@ func (h Handler) SetHandlers() {
 	h.session.AddHandler(h.RemoveChannel)
 	h.session.AddHandler(h.ListChannel)
 }
+
+func SendInteractionRespond(content string, s *discordgo.Session, i *discordgo.InteractionCreate) {
+	s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+		Type: discordgo.InteractionResponseChannelMessageWithSource,
+		Data: &discordgo.InteractionResponseData{
+			Content: content,
+		},
+	})
+}
