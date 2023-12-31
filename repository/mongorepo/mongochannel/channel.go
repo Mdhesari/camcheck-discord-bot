@@ -14,7 +14,7 @@ func (d *DB) GetAll(ctx context.Context, discordGID string) ([]entity.Channel, e
 	defer cancel()
 
 	var channels []entity.Channel
-	cur, err := d.cli.Conn().Collection("channels").Find(ctx, bson.D{{"discord_id", discordGID}}, options.Find())
+	cur, err := d.cli.Conn().Collection("channels").Find(ctx, bson.M{"GuildID": discordGID}, options.Find())
 	if err != nil {
 		return nil, err
 	}
@@ -37,7 +37,7 @@ func (d *DB) FindByID(ctx context.Context, id string) (*entity.Channel, error) {
 	defer cancel()
 
 	var ch entity.Channel
-	filter := bson.D{{"ID", id}}
+	filter := bson.M{"ID": id}
 	res := d.cli.Conn().Collection("channels").FindOne(ctx, filter)
 	if res.Err() != nil {
 		return nil, res.Err()
