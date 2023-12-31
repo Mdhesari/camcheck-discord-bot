@@ -28,7 +28,6 @@ func (h Handler) ListChannel(s *discordgo.Session, i *discordgo.InteractionCreat
 	}
 
 	s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
-		// Ignore type for now, they will be discussed in "responses"
 		Type: discordgo.InteractionResponseChannelMessageWithSource,
 		Data: &discordgo.InteractionResponseData{
 			Content: content,
