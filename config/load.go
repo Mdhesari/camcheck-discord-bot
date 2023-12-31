@@ -9,7 +9,9 @@ import (
 func Load(path string) Config {
 	var k = koanf.New(".")
 
-	k.Load(file.Provider(path), yaml.Parser())
+	if err := k.Load(file.Provider(path), yaml.Parser()); err != nil {
+		panic(err)
+	}
 
 	var cfg Config
 	if err := k.Unmarshal("", &cfg); err != nil {

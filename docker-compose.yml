@@ -13,7 +13,7 @@ services:
     image: mongo-express
     restart: always
     ports:
-      - 8089:8089
+      - 9090:9090
     environment:
       - ME_CONFIG_MONGODB_ADMINUSERNAME=michael
       - ME_CONFIG_MONGODB_ADMINPASSWORD=secret

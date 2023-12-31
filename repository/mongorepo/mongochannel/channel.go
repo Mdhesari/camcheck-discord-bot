@@ -69,7 +69,7 @@ func (d *DB) FindByDiscordID(ctx context.Context, id string) (*entity.Channel, e
 	defer cancel()
 
 	var ch entity.Channel
-	filter := bson.D{{"discord_id", id}}
+	filter := bson.M{"discord_id": id}
 	res := d.cli.Conn().Collection("channels").FindOne(ctx, filter)
 	if res.Err() != nil {
 		return nil, res.Err()

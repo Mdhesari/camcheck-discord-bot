@@ -7,7 +7,6 @@ import (
 	"mdhesari/shawshank-discord-bot/entity"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/google/uuid"
 )
 
 func (h Handler) AddChannel(s *discordgo.Session, i *discordgo.InteractionCreate) {
@@ -38,7 +37,6 @@ func (h Handler) AddChannel(s *discordgo.Session, i *discordgo.InteractionCreate
 		margs = append(margs, opt.ChannelValue(nil).ID)
 
 		shawshankch := entity.Channel{
-			ID:        uuid.NewString(),
 			DiscordID: c.ID,
 			GuildID:   c.GuildID,
 			Name:      c.Name,

@@ -12,5 +12,12 @@ type Discord struct {
 
 type Config struct {
 	Database Database `koanf:"database"`
-	Discord Discord `koanf:"discord"`
+	Discord  Discord  `koanf:"discord"`
+}
+
+func New(db Database, discord Discord) Config {
+	return Config{
+		Database: db,
+		Discord:  discord,
+	}
 }
