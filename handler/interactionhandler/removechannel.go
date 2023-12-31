@@ -46,7 +46,7 @@ func (h Handler) RemoveChannel(s *discordgo.Session, i *discordgo.InteractionCre
 		content = "> channel is not in camcheck's list: <#%s>\n"
 	}
 
-	fmt.Sprintf(content, c.ID)
+	content = fmt.Sprintf(content, c.ID)
 
 	sendInteractionRespond(content, s, i)
 }
