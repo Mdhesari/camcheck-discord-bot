@@ -126,7 +126,7 @@ func removeCommands(s *discordgo.Session, registercmds []*discordgo.ApplicationC
 }
 
 func registerHandlers(s *discordgo.Session) {
-	cli, err := mongorepo.New(cfg.Database.MongoDB, 30*time.Second, encrypt.Hash{})
+	cli, err := mongorepo.New(cfg.Database.MongoDB, 5*time.Second, encrypt.Hash{})
 	if err != nil {
 		panic(err)
 	}
