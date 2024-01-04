@@ -30,6 +30,10 @@ var (
 			Description: "Display bot channels list.",
 		},
 		{
+			Name:        "camcheck",
+			Description: "Manage Camcheck.",
+		},
+		{
 			Name:        "add-channel",
 			Description: "Adds a new channel to bot.",
 			Options: []*discordgo.ApplicationCommandOption{

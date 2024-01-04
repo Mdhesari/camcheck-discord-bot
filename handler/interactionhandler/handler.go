@@ -25,6 +25,7 @@ func (h Handler) SetHandlers() {
 	h.session.AddHandler(h.AddChannel)
 	h.session.AddHandler(h.RemoveChannel)
 	h.session.AddHandler(h.ListChannel)
+	h.session.AddHandler(h.ManageChannels)
 }
 
 func SendInteractionRespond(content string, s *discordgo.Session, i *discordgo.InteractionCreate) {
