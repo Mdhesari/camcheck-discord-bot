@@ -9,23 +9,39 @@ import (
 
 type Handler struct {
 	config     *config.Discord
-	session    *discordgo.Session
 	channelSrv *channelservice.Service
+	handlers   []func()
+	commandIDs []string
 }
 
-func New(cfg *config.Discord, s *discordgo.Session, channelSrv channelservice.Service) *Handler {
+func New(cfg *config.Discord, channelSrv *channelservice.Service) *Handler {
 	return &Handler{
 		config:     cfg,
-		session:    s,
-		channelSrv: &channelSrv,
+		channelSrv: channelSrv,
 	}
 }
 
-func (h Handler) SetHandlers() {
-	h.session.AddHandler(h.AddChannel)
-	h.session.AddHandler(h.RemoveChannel)
-	h.session.AddHandler(h.ListChannel)
-	h.session.AddHandler(h.ManageChannels)
+func (h Handler) Register(session *discordgo.Session) {
+	h.TearUpCommands(session)
+
+	actions := []interface{}{
+		h.AddChannel,
+		h.RemoveChannel,
+		h.ListChannel,
+		h.ManageChannels,
+	}
+
+	for _, a := range actions {
+		h.handlers = append(h.handlers, session.AddHandler(a))
+	}
+}
+
+func (h Handler) DeRegister(session *discordgo.Session) {
+	h.TearDownCommands(session)
+
+	for _, remove := range h.handlers {
+		remove()
+	}
 }
 
 func SendInteractionRespond(content string, s *discordgo.Session, i *discordgo.InteractionCreate) {

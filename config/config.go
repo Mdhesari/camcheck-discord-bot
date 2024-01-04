@@ -12,6 +12,7 @@ type Database struct {
 
 type Discord struct {
 	Name           string `koanf:"name"`
+	GuildID        string `koanf:"guild_id"`
 	MaxWaitSeconds int    `koanf:"max_wait_seconds"`
 	Token          string `koanf:"token"`
 }

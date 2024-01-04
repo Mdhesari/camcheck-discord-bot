@@ -3,6 +3,7 @@ type: yml
 discord:
   name: CamCheckBot
   max_wait_seconds: 30
+  guild_id:
   token: YOUR_DISCORD_BOT_TOKEN
 
 database:

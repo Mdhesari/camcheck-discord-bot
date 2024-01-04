@@ -9,18 +9,29 @@ import (
 
 type Handler struct {
 	config     *config.Discord
-	session    *discordgo.Session
-	channelSrv channelservice.Service
+	channelSrv *channelservice.Service
+	handlers   []func()
 }
 
-func New(cfg *config.Discord, s *discordgo.Session, chs channelservice.Service) *Handler {
+func New(cfg *config.Discord, chSrv *channelservice.Service) *Handler {
 	return &Handler{
 		config:     cfg,
-		session:    s,
-		channelSrv: chs,
+		channelSrv: chSrv,
 	}
 }
 
-func (h Handler) SetHandlers() {
-	h.session.AddHandler(h.CheckCameraAndDisconnect)
+func (h Handler) Register(session *discordgo.Session) {
+	actions := []interface{}{
+		h.CheckCameraAndDisconnect,
+	}
+
+	for _, a := range actions {
+		h.handlers = append(h.handlers, session.AddHandler(a))
+	}
+}
+
+func (h Handler) DeRegister(session *discordgo.Session) {
+	for _, remove := range h.handlers {
+		remove()
+	}
 }

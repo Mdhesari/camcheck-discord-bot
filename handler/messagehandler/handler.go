@@ -1,19 +1,34 @@
 package messagehandler
 
 import (
+	"mdhesari/camcheck-discord-bot/config"
+
 	"github.com/bwmarrin/discordgo"
 )
 
 type Handler struct {
-	session *discordgo.Session
+	config   *config.Discord
+	handlers []func()
 }
 
-func New(s *discordgo.Session) *Handler {
+func New(cfg *config.Discord) *Handler {
 	return &Handler{
-		session: s,
+		config: cfg,
 	}
 }
 
-func (h Handler) SetHanlders() {
-	h.session.AddHandler(h.ReplyCommands)
+func (h Handler) Register(session *discordgo.Session) {
+	actions := []interface{}{
+		h.ReplyCommands,
+	}
+
+	for _, a := range actions {
+		h.handlers = append(h.handlers, session.AddHandler(a))
+	}
+}
+
+func (h Handler) DeRegister(session *discordgo.Session) {
+	for _, remove := range h.handlers {
+		remove()
+	}
 }
