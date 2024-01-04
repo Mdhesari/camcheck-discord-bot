@@ -28,8 +28,8 @@ func (h Handler) CheckCameraAndDisconnect(s *discordgo.Session, e *discordgo.Voi
 		h.channelSrv.AddUserCameraOff(e.ChannelID, e.UserID)
 
 		go func(guildId string, channelId string, userId string) {
-			log.Println("self video: ", e.SelfVideo)
-
+			log.Println(e.ChannelID, channelId)
+			// give some time to enable camera the notice
 			time.Sleep(10 * time.Second)
 
 			if !h.channelSrv.IsUserCameraOn(channelId, userId) {
@@ -40,9 +40,10 @@ func (h Handler) CheckCameraAndDisconnect(s *discordgo.Session, e *discordgo.Voi
 				}
 			}
 
+			// last opportunity for user to enable camera
 			time.Sleep(time.Duration(h.config.MaxWaitSeconds) * time.Second)
 
-			log.Println("self video: ", e.SelfVideo)
+			log.Println(e.ChannelID, channelId)
 
 			if !h.channelSrv.IsUserCameraOn(channelId, userId) && e.ChannelID == channelId {
 				if err := s.GuildMemberMove(guildId, userId, nil); err != nil {
