@@ -27,7 +27,7 @@ func (h Handler) CheckCameraAndDisconnect(s *discordgo.Session, e *discordgo.Voi
 	if !e.SelfVideo && e.ChannelID != "" {
 		h.channelSrv.AddUserCameraOff(e.ChannelID, e.UserID)
 
-		go func(channelId string, userId string) {
+		go func(guildId string, channelId string, userId string) {
 			log.Println("self video: ", e.SelfVideo)
 
 			time.Sleep(10 * time.Second)
@@ -43,11 +43,11 @@ func (h Handler) CheckCameraAndDisconnect(s *discordgo.Session, e *discordgo.Voi
 			log.Println("self video: ", e.SelfVideo)
 
 			if !h.channelSrv.IsUserCameraOn(channelId, userId) && e.ChannelID == channelId {
-				if err := s.GuildMemberMove(channelId, userId, nil); err != nil {
+				if err := s.GuildMemberMove(guildId, userId, nil); err != nil {
 					log.Println("Failed to disconnect from channel: ", err)
 				}
 			}
-		}(e.ChannelID, e.UserID)
+		}(e.GuildID, e.ChannelID, e.UserID)
 	} else if e.SelfVideo {
 		if !h.channelSrv.IsUserCameraOn(e.ChannelID, e.UserID) {
 			h.channelSrv.RemoveUserCameraOff(e.ChannelID, e.UserID)
