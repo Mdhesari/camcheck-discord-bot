@@ -5,6 +5,7 @@ import (
 	"log"
 	"mdhesari/camcheck-discord-bot/entity"
 
+	"github.com/redis/go-redis/v9"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -43,35 +44,54 @@ func (s Service) AddChannel(ctx context.Context, ch *entity.Channel) error {
 	return nil
 }
 
-func (s Service) AddUserCameraOff(channelID string, userID string) bool {
-	err := s.cacheRepo.AddUserCameraOff(channelID, userID)
+func (s Service) AddCamCheck(userID string, channelID string) bool {
+	res, err := s.cacheRepo.Create(userID, channelID)
 	if err != nil {
 		log.Println("Add user camera off error: ", err)
 
 		return false
 	}
 
-	return true
+	return res
 }
 
-func (s Service) RemoveUserCameraOff(channelID string, userID string) bool {
-	err := s.cacheRepo.RemoveUserCameraOff(channelID, userID)
+func (s Service) RemoveUserCamCheck(userID string) bool {
+	res, err := s.cacheRepo.Delete(userID)
 	if err != nil {
 		log.Println("Remove user camera off error: ", err)
 
 		return false
 	}
 
-	return true
+	return res
 }
 
-func (s Service) IsUserCameraOn(channelID string, userID string) bool {
-	res, err := s.cacheRepo.IsUserCameraOn(channelID, userID)
+func (s Service) CamCheckUserIsOff(userID string, channelID string) bool {
+	id, err := s.cacheRepo.Get(userID)
 	if err != nil {
+		if err == redis.Nil {
+			return false
+		}
+
 		log.Println("Redis repo error: ", err)
 
 		return false
 	}
 
-	return res
+	return id == channelID
+}
+
+func (s Service) camCheckUser(userID string) bool {
+	_, err := s.cacheRepo.Get(userID)
+	if err != nil {
+		if err == redis.Nil {
+			return false
+		}
+
+		log.Println("Redis repo error: ", err)
+
+		return false
+	}
+
+	return true
 }

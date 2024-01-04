@@ -6,12 +6,9 @@ import (
 )
 
 type CacheRepository interface {
-	Create(id string) (bool, error)
+	Create(key string, value string) (bool, error)
 	Get(id string) (string, error)
 	Delete(id string) (bool, error)
-	IsUserCameraOn(channelID string, userID string) (bool, error)
-	AddUserCameraOff(channelID string, userID string) error
-	RemoveUserCameraOff(channelID string, userID string) error
 }
 
 type Repository interface {
@@ -33,7 +30,7 @@ func New(repo Repository, cacheRepo CacheRepository) Service {
 	}
 }
 
-func (s Service) Get(ctx context.Context,discordGID string) ([]entity.Channel, error) {
+func (s Service) Get(ctx context.Context, discordGID string) ([]entity.Channel, error) {
 	channels, err := s.repo.GetAll(ctx, discordGID)
 	if err != nil {
 		return nil, err
