@@ -48,6 +48,8 @@ func (h Handler) CheckCameraAndDisconnect(s *discordgo.Session, e *discordgo.Voi
 			if !h.channelSrv.IsUserCameraOn(e.ChannelID, e.UserID) {
 				if err := s.GuildMemberMove(e.GuildID, e.UserID, nil); err != nil {
 					log.Println("Failed to disconnect from channel: ", err)
+				} else {
+					h.channelSrv.RemoveUserCameraOff(e.ChannelID, e.UserID)
 				}
 			}
 		}()
