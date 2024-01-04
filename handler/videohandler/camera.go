@@ -35,7 +35,9 @@ func (h Handler) CheckCameraAndDisconnect(s *discordgo.Session, e *discordgo.Voi
 			if !h.channelSrv.IsUserCameraOn(channelId, userId) {
 				msg := fmt.Sprintf("%s Your camera is off! You will be disconnected very soon!\nThat's all I know...", e.Member.User.Mention())
 
-				s.ChannelMessageSend(channelId, msg)
+				if _, err := s.ChannelMessageSend(channelId, msg); err != nil {
+					log.Println(err)
+				}
 			}
 
 			time.Sleep(time.Duration(h.config.MaxWaitSeconds) * time.Second)
